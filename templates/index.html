@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ethereum Python Test</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+                <!-- Button with the link to the other html file. In this case a link between network.html and node.html. -->
+                <!-- COPY AND PASTE FOR A NEW BUTTON -->
+            <hr>
+                <div class="row">
+                    <div class="col">
+                        <ul class="nav nav-pills nav-justified">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/">Ganache Transactions</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/smartcontractsabi">Smart Contracts ABI</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/smartcontractsbytecode">Smart Contracts Bytecode</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/smartcontractsunderstanding">Understanding Smart Contracts</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            <hr>
+              <!-- COPY AND PASTE FOR A NEW BUTTON -->
+              <!-- Button with the link to the other html file. In this case a link between network.html and node.html. -->
+              <div class="row">
+                  <div class="col">
+                          <div class="form-group">
+                              <br><br><br>
+                              <label><h4>Sender:</h4></label>
+                              <input v-model="outgoingTx.sender" type="text" class="form-control form-control-lg" id="node-sender" title="Sender" placeholder="Enter Sender" autocomplete="off">
+                              <br><br>
+                              <label><h4>Private Key Sender:</h4></label>
+                              <input v-model="outgoingTx.key" type="text" class="form-control form-control-lg" id="node-key" title="Key" placeholder="Enter Key" autocomplete="off">
+                              <br><br>
+                              <label><h4>Amount:</h4></label>
+                              <input v-model="outgoingTx.amount" type="text" class="form-control form-control-lg" id="node-amount" title="Amount" placeholder="Amount" autocomplete="off">
+                              <br><br>
+                              <label><h4>Recipient:</h4></label>
+                              <input v-model="outgoingTx.recipient" type="text" class="form-control form-control-lg" id="node-recipient" title="Recipient" placeholder="Enter Recipient" autocomplete="off">
+                              <br>
+                              <button type="submit" class="btn btn-success btn-block btn-lg" @click="ethereum" id="userb1">Send Coins</button>
+                          </div>
+              </div><br>
+            </div>
+            <hr>
+            <div v-if="warning" class="alert alert-warning" role="alert">
+                {{ warning }}
+            </div>
+            <div v-if="success" class="alert alert-success" role="alert">
+                {{ success }}
+            </div>
+            <div v-if="error" class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                error: null,
+                success: null,
+                warning: null,
+                outgoingTx: {
+                    recipient: '',
+                    sender: '',
+                    key: '',
+                    amount: 0
+                }
+            },
+            methods: {
+                ethereum: function () {
+                    // Send user to backend
+                    var vm = this;
+                    axios.post('/ethereum_cryptocurrency', {
+                        recipient: this.outgoingTx.recipient,
+                        sender: this.outgoingTx.sender,
+                        key: this.outgoingTx.key,
+                        amount: this.outgoingTx.amount
+                    })
+                        .then(function(response) {
+                            vm.error = null;
+                            vm.success = response.data.message;
+                            vm.warning = response.data.message2;
+                        })
+                        .catch(function (error) {
+                            vm.success = null;
+                            vm.error = error.response.data.message;
+                            vm.warning = null;
+                        });
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
